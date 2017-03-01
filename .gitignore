@@ -1,0 +1,13 @@
+# Xilinx creates a huge bunch of auxiliary files,
+# so we use a whitelisting approach here.
+
+# First, ignore everything in the project root
+/*
+# Now, whitelist src, sim, doc directories
+!src/
+!sim/
+!doc/
+# And the Xilinx project file
+!*.xise
+# And the .gitignore itself
+!.gitignore
