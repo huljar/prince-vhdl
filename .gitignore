@@ -11,3 +11,6 @@
 !*.xise
 # And the .gitignore itself
 !.gitignore
+# And LICENSE/README files
+!README*
+!LICENSE*
