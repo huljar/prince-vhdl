@@ -31,4 +31,4 @@ in separate files (`sbox`, `linear_m` etc.).
 ## License
 The code is licensed under the terms of the GNU Lesser General
 Public License (LGPL) Version 3. For more information, please see
-the LICENSE.md file.
+the [LICENSE.md](LICENSE.md) file.
