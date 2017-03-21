@@ -29,6 +29,5 @@ S-Boxes (non-linear layer) and permutation (linear layer) reside
 in separate files (`sbox`, `linear_m` etc.).
 
 ## License
-The code is licensed under the terms of the GNU Lesser General
-Public License (LGPL) Version 3. For more information, please see
-the [LICENSE.md](LICENSE.md) file.
+The code is licensed under the terms of the MIT license. For more
+information, please see the [LICENSE.md](LICENSE.md) file.
