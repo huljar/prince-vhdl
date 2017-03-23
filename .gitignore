@@ -7,10 +7,11 @@
 !src/
 !sim/
 !doc/
-# And the Xilinx project file
+# And the Xilinx ISE and Vivado project files
 !*.xise
+!*.xpr
 # And the .gitignore itself
 !.gitignore
-# And LICENSE/README files
-!README*
+# LICENSE, README
 !LICENSE*
+!README*
