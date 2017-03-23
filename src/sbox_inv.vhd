@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- Inverted substitution box of PRINCE
 entity sbox_inv is
     port(data_in:  in std_logic_vector(3 downto 0);
          data_out: out std_logic_vector(3 downto 0)

@@ -1,17 +1,21 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- The top level module of PRINCE
 entity prince_top is
-    port(plaintext:  in std_logic_vector(63 downto 0);
-         key:        in std_logic_vector(127 downto 0);
-         ciphertext: out std_logic_vector(63 downto 0)
+    port(plaintext:  in std_logic_vector(63 downto 0);  -- 64 bit plaintext block
+         key:        in std_logic_vector(127 downto 0); -- 128 bit key
+         ciphertext: out std_logic_vector(63 downto 0)  -- 64 bit encrypted block
     );
 end prince_top;
 
 architecture structural of prince_top is
+    -- Intermediate signals for splitting the key into the whitening keys k0
+    -- and k0_end, and the key k1 which is used in prince_core
     signal k0_start,
            k0_end,
            k1: std_logic_vector(63 downto 0);
+    -- Data I/O for prince_core
     signal core_in,
            core_out: std_logic_vector(63 downto 0);
 

@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- The cipher without the key whitening layer
 entity prince_core is
     port(data_in:  in std_logic_vector(63 downto 0);
          key:      in std_logic_vector(63 downto 0);
@@ -12,6 +13,7 @@ architecture structural of prince_core is
     type round_constants is array(0 to 11) of std_logic_vector(63 downto 0);
     type intermediate_signals is array(0 to 11) of std_logic_vector(63 downto 0);
 
+    -- Round constants for each round
     constant rcs: round_constants := (x"0000000000000000",
                                       x"13198A2E03707344",
                                       x"A4093822299F31D0",
@@ -25,9 +27,11 @@ architecture structural of prince_core is
                                       x"D3B5A399CA0C2399",
                                       x"C0AC29B7C97C50DD");
 
+    -- Signals for transporting the data between rounds
     signal ims: intermediate_signals;
     signal middle1, middle2: std_logic_vector(63 downto 0);
 
+    -- Required component declarations
     component sbox
         port(data_in:  in std_logic_vector(3 downto 0);
              data_out: out std_logic_vector(3 downto 0)
@@ -65,7 +69,7 @@ architecture structural of prince_core is
         -- Round 1 to 5
         FIRST_HALF: for i in 1 to 5 generate
             signal sb_out, m_out: std_logic_vector(63 downto 0);
-        
+
         begin
             SB_FH: for j in 0 to 15 generate
                 SX_FH: sbox port map(

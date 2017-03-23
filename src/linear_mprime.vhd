@@ -1,6 +1,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- Linear layer of PRINCE
+-- This entity multiplies the 64 bit state with a fixed 64x64 matrix. Each row
+-- and column of this matrix has exactly 3 bits set to 1, while the rest is
+-- set to 0.
 entity linear_mprime is
     port(data_in:  in std_logic_vector(63 downto 0);
          data_out: out std_logic_vector(63 downto 0)
