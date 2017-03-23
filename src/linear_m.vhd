@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- This entity applies the matrix from linear_mprime. In addition, a nibble-wise
+-- transposition is performed in the end.
 entity linear_m is
     port(data_in:  in std_logic_vector(63 downto 0);
          data_out: out std_logic_vector(63 downto 0)

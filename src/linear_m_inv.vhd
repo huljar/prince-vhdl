@@ -1,6 +1,9 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+-- This entity applies the inverse transformation of linear_m. The transposition
+-- is done before multiplying the state with the matrix. The matrix itself
+-- (linear_mprime) stays the same because it is an involution.
 entity linear_m_inv is
     port(data_in:  in std_logic_vector(63 downto 0);
          data_out: out std_logic_vector(63 downto 0)
