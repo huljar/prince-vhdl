@@ -31,7 +31,7 @@ architecture behavioral of axi_stream_wrapper is
     signal ip_ciphertext: std_logic_vector(63 downto 0);
 
     signal ip_plaintext_buf: axis_buffer(0 to 1);
-    signal ip_key_buf: axis_buffer(0 to 4);
+    signal ip_key_buf: axis_buffer(0 to 3);
     signal ip_ciphertext_buf: axis_buffer(0 to 1);
 
     component prince_top
