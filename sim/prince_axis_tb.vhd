@@ -75,7 +75,7 @@ ARCHITECTURE behavior OF prince_axis_tb IS
    constant clk_period : time := 10 ns;
    
    -- Other signals
-   signal ciphertext : std_logic_vector(63 downto 0);
+   signal outtext : std_logic_vector(63 downto 0);
 
 BEGIN
 
@@ -110,13 +110,20 @@ BEGIN
       -- hold reset state for 100 ns.
       wait for 100 ns;
 
-      -- write plaintext
+      -- init (idle state)
       ARESETN <= '1';
       S_AXIS_TVALID <= '1';
+      wait for clk_period;
+      
+      -- write parameter
+      S_AXIS_TDATA <= x"00000000"; -- encryption
+      wait for clk_period;
+      assert (S_AXIS_TREADY = '1') report "ERROR: axi slave is not ready!" severity error;
+      
+      -- write plaintext
       S_AXIS_TDATA <= x"01234567";
       wait for clk_period;
       assert (S_AXIS_TREADY = '1') report "ERROR: axi slave is not ready!" severity error;
-      wait for clk_period;
       S_AXIS_TDATA <= x"89ABCDEF";
       wait for clk_period;
       
@@ -136,16 +143,66 @@ BEGIN
       assert (M_AXIS_TVALID = '1') report "ERROR: axi master is not ready in time!" severity error;
       M_AXIS_TREADY <= '1';
       wait for clk_period;
-      ciphertext(63 downto 32) <= M_AXIS_TDATA;
+      outtext(63 downto 32) <= M_AXIS_TDATA;
       wait for clk_period;
-      ciphertext(31 downto 0) <= M_AXIS_TDATA;
+      outtext(31 downto 0) <= M_AXIS_TDATA;
       wait for clk_period;
       assert (M_AXIS_TVALID = '0') report "ERROR: axi master is still valid after writing all output!" severity error;
       M_AXIS_TREADY <= '0';
       
       -- print ciphertext
-      hwrite(ct, ciphertext);
+      hwrite(ct, outtext);
       report "Ciphertext is " & ct.all & " (expected value: ae25ad3ca8fa9ccf)";
+      deallocate(ct);
+      
+      -- DECRYPTION
+      -- reset - just to be sure
+      ARESETN <='0';
+      wait for 100 ns;
+      
+      -- init (idle state)
+      ARESETN <= '1';
+      S_AXIS_TVALID <= '1';
+      wait for clk_period;
+      
+      -- write parameter
+      S_AXIS_TDATA <= x"00000001"; -- encryption
+      wait for clk_period;
+      assert (S_AXIS_TREADY = '1') report "ERROR: axi slave is not ready!" severity error;
+            
+      -- write ciphertext
+      S_AXIS_TDATA <= x"AE25AD3C";
+      wait for clk_period;
+      assert (S_AXIS_TREADY = '1') report "ERROR: axi slave is not ready!" severity error;
+      S_AXIS_TDATA <= x"A8FA9CCF";
+      wait for clk_period;
+            
+      -- write key
+      S_AXIS_TDATA <= (others => '0');
+      wait for clk_period*2;
+      S_AXIS_TDATA <= x"FEDCBA98";
+      wait for clk_period;
+      S_AXIS_TDATA <= x"76543210";
+      wait for clk_period;
+      S_AXIS_TDATA <= (others => '0');
+      S_AXIS_TVALID <= '0';
+      wait for clk_period;
+      assert (S_AXIS_TREADY = '0') report "ERROR: axi slave is still ready after reading data!" severity error;
+            
+      -- read plaintext
+      assert (M_AXIS_TVALID = '1') report "ERROR: axi master is not ready in time!" severity error;
+      M_AXIS_TREADY <= '1';
+      wait for clk_period;
+      outtext(63 downto 32) <= M_AXIS_TDATA;
+      wait for clk_period;
+      outtext(31 downto 0) <= M_AXIS_TDATA;
+      wait for clk_period;
+      assert (M_AXIS_TVALID = '0') report "ERROR: axi master is still valid after writing all output!" severity error;
+      M_AXIS_TREADY <= '0';
+            
+      -- print plaintext
+      hwrite(ct, outtext);
+      report "Plaintext is " & ct.all & " (expected value: 0123456789ABCDEF)";
       deallocate(ct);
 
       wait;
